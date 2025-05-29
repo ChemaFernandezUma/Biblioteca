@@ -25,5 +25,37 @@ public class Autor {
     private Date fechaNacimiento;
     @OneToMany(mappedBy = "autor")
     private List<Libro> librosEscritos;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getNombre() {
+		return nombre;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	public String getNacionalidad() {
+		return nacionalidad;
+	}
+	public void setNacionalidad(String nacionalidad) {
+		this.nacionalidad = nacionalidad;
+	}
+	public Date getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+	public void setFechaNacimiento(Date fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
+	}
+	public List<Libro> getLibrosEscritos() {
+		return librosEscritos;
+	}
+	public void setLibrosEscritos(List<Libro> librosEscritos) {
+		this.librosEscritos = librosEscritos;
+	}
+    
+    
     
 }

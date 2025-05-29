@@ -67,6 +67,13 @@ public class Libro {
 		public void setCopias(List<Copia> copias) {
 			this.copias = copias;
 		}
+		public Autor getAutor() {
+			return autor;
+		}
+		public void setAutor(Autor autor) {
+			this.autor = autor;
+		}
+		
 	    
 	    
 }

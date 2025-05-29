@@ -45,5 +45,12 @@ public class Prestamo {
 	public void setUsuario(Lector usuario) {
 		this.usuario = usuario;
 	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
     
 }

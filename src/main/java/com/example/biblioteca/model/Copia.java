@@ -1,7 +1,8 @@
-package com.example.model;
+package com.example.biblioteca.model;
 
 import jakarta.persistence.*;
-
+@Entity
+@Table(name = "copia")  // opcional
 public class Copia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

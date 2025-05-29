@@ -1,10 +1,15 @@
-package com.example.model;
+package com.example.biblioteca.model;
 
 import java.sql.Date;
 
 import jakarta.persistence.*;
-
+@Entity
+@Table(name = "prestamo")  // opcional
 public class Prestamo {
+ 	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
+	private Long id;
 	@Column
 	private Date inicio;
 	@Column

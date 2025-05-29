@@ -1,9 +1,10 @@
-package com.example.model;
+package com.example.biblioteca.model;
 
 import java.util.List;
 
 import jakarta.persistence.*;
-
+@Entity
+@Table(name = "lector")  // opcional
 public class Lector {
  	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,6 +2,8 @@ package com.example.biblioteca.model;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 @Entity
 @Table(name = "prestamo")  // opcional
@@ -18,6 +20,7 @@ public class Prestamo {
     @JoinColumn(name = "copia_id")  // Clave foránea apuntando a una copia
     private Copia copia;
     @ManyToOne
+	@JsonBackReference
     @JoinColumn(name = "lector_nSocio") // Clave foránea hacia el usuario
     private Lector usuario;
     

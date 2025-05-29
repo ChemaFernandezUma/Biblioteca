@@ -2,6 +2,8 @@ package com.example.biblioteca.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 @Entity
 @Table(name = "lector")  // opcional
@@ -16,6 +18,7 @@ public class Lector {
     private String telefono;
     @Column
     private String direccion;
+    @JsonManagedReference
     @OneToMany(mappedBy = "usuario")  // Relación con Prestamo
     private List<Prestamo> prestamos;
 	public Long getnSocio() {

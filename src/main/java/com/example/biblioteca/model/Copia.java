@@ -1,5 +1,7 @@
 package com.example.biblioteca.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -10,9 +12,11 @@ public class Copia {
 	@Column
 	private Long id;
 	@Column
+	@Enumerated(EnumType.STRING)
 	private EstadoCopia estado;
 	@ManyToOne
 	@JoinColumn(name = "libro_id")
+	@JsonBackReference
 	private Libro libro;
 	@OneToOne(mappedBy = "copia") // Mapeo inverso de Prestamo
 	private Prestamo prestamo;

@@ -31,6 +31,14 @@ public class Libro {
 	    @ManyToOne
 	    @JoinColumn(name = "autor_id")
 	    private Autor autor;
+	    
+	    public Copia buscarCopiaDisponible() {
+	        return getCopias().stream()
+	            .filter(copia -> EstadoCopia.BIBLIOTECA.equals(copia.getEstado()))
+	            .findFirst()
+	            .orElse(null);
+	    }
+
 		public Long getId() {
 			return id;
 		}

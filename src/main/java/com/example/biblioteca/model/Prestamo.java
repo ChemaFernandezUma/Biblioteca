@@ -16,11 +16,19 @@ public class Prestamo {
 	private Date fin;
     @OneToOne
     @JoinColumn(name = "copia_id")  // Clave foránea apuntando a una copia
-    private Copia copia;
+    private Long copia;
     @ManyToOne
     @JoinColumn(name = "lector_nSocio") // Clave foránea hacia el usuario
-    private Lector usuario;
+    private Long usuario;
     
+    
+	public Prestamo(Date inicio, Date fin, Long copia, Long usuario) {
+		this.inicio = inicio;
+		this.fin = fin;
+		this.copia = copia;
+		this.usuario = usuario;
+	}
+	
 	public Date getInicio() {
 		return inicio;
 	}
@@ -33,18 +41,23 @@ public class Prestamo {
 	public void setFin(Date fin) {
 		this.fin = fin;
 	}
-	public Copia getCopia() {
+
+	public Long getCopia() {
 		return copia;
 	}
-	public void setCopia(Copia copia) {
+
+	public void setCopia(long copia) {
 		this.copia = copia;
 	}
-	public Lector getUsuario() {
+
+	public Long getUsuario() {
 		return usuario;
 	}
-	public void setUsuario(Lector usuario) {
+
+	public void setUsuario(long usuario) {
 		this.usuario = usuario;
 	}
+
 	public Long getId() {
 		return id;
 	}

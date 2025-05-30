@@ -1,5 +1,6 @@
 package com.example.biblioteca.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -18,6 +19,20 @@ public class Lector {
     private String direccion;
     @OneToMany(mappedBy = "usuario")  // Relación con Prestamo
     private List<Prestamo> prestamos;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Multa multa;
+    
+    public boolean tieneMultaActiva() {
+        return multa != null && multa.estaActiva();
+    }
+    public void aplicarMulta(int diasRetraso) {
+        LocalDate inicio = LocalDate.now();
+        this.multa = new Multa(inicio, inicio.plusDays(diasRetraso * 2));
+    }
+	
+	public void setMulta(Multa multa) {
+		this.multa = multa;
+	}
 	public Long getnSocio() {
 		return nSocio;
 	}

@@ -5,23 +5,25 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "copia") // opcional
+@Table(name = "copia")
 public class Copia {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column
 	private Long id;
+
 	@Column
 	@Enumerated(EnumType.STRING)
 	private EstadoCopia estado;
+
 	@ManyToOne
 	@JoinColumn(name = "libro_id")
-	@JsonBackReference
+	@JsonBackReference(value = "libro-copias")
 	private Libro libro;
-	@OneToOne(mappedBy = "copia")
-	@JsonBackReference  // lado inverso (back)
-	private Prestamo prestamo;
 
+	@OneToOne(mappedBy = "copia")
+	@JsonBackReference(value = "copia-prestamo")
+	private Prestamo prestamo;
 
 	public Long getId() {
 		return id;
@@ -54,5 +56,4 @@ public class Copia {
 	public void setPrestamo(Prestamo prestamo) {
 		this.prestamo = prestamo;
 	}
-
 }

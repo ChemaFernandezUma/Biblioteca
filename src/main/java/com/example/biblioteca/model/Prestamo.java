@@ -3,6 +3,7 @@ package com.example.biblioteca.model;
 import java.sql.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 @Entity
@@ -16,9 +17,10 @@ public class Prestamo {
 	private Date inicio;
 	@Column
 	private Date fin;
-    @OneToOne
-    @JoinColumn(name = "copia_id")  // Clave foránea apuntando a una copia
-    private Copia copia;
+	@OneToOne
+	@JoinColumn(name = "copia_id")
+	@JsonManagedReference  // lado principal (managed)
+	private Copia copia;
     @ManyToOne
 	@JsonBackReference
     @JoinColumn(name = "lector_nSocio") // Clave foránea hacia el usuario

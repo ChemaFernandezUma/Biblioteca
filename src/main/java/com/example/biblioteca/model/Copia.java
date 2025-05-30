@@ -18,8 +18,10 @@ public class Copia {
 	@JoinColumn(name = "libro_id")
 	@JsonBackReference
 	private Libro libro;
-	@OneToOne(mappedBy = "copia") // Mapeo inverso de Prestamo
+	@OneToOne(mappedBy = "copia")
+	@JsonBackReference  // lado inverso (back)
 	private Prestamo prestamo;
+
 
 	public Long getId() {
 		return id;

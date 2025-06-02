@@ -30,15 +30,32 @@ public class Lector {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Multa multa;
+
+	public Lector() {}
+
+    public Lector(Long nSocio, String nombre, String telefono, String direccion, List<Prestamo> prestamos, Multa multa) {
+        this.nSocio = nSocio;
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.direccion = direccion;
+        this.prestamos = prestamos;
+        this.multa = multa;
+    }
     
     public boolean tieneMultaActiva() {
         return multa != null && multa.estaActiva();
     }
     public void aplicarMulta(int diasRetraso) {
+		if(diasRetraso <=0){
         LocalDate inicio = LocalDate.now();
         this.multa = new Multa(inicio, inicio.plusDays(diasRetraso * 2));
+		}
     }
 	
+	public Multa getMulta() {
+		return multa;
+	}
+
 	public void setMulta(Multa multa) {
 		this.multa = multa;
 	}

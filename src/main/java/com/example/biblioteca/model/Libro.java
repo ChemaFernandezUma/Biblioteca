@@ -36,6 +36,19 @@ public class Libro {
 		@JsonBackReference(value = "autor-libro")
 	    @JoinColumn(name = "autor_id")
 	    private Autor autor;
+
+
+		public Libro() {}
+
+		public Libro(Long id, String titulo, TipoLibro tipoLibro, String editorial, int anyo, List<Copia> copias, Autor autor) {
+			this.id = id;
+			this.titulo = titulo;
+			this.tipoLibro = tipoLibro;
+			this.editorial = editorial;
+			this.anyo = anyo;
+			this.copias = copias;
+			this.autor = autor;
+		}
 	    
 	    public Copia buscarCopiaDisponible() {
 	        return getCopias().stream()

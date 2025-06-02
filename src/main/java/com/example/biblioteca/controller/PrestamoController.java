@@ -31,12 +31,18 @@ public class PrestamoController {
 
 	@PostMapping("/create")
 	public Prestamo createPrestamo(@RequestBody Prestamo prestamo) {
+		if (prestamo.getCopia() == null || prestamo.getUsuario() == null) {
+			throw new IllegalArgumentException("Copia y Usuario no pueden ser null");
+		}
 		return service.createPrestamo(prestamo);
 	}
 
 	@PutMapping("/update/{id}")
 	public ResponseEntity<Prestamo> updatePrestamo(@PathVariable Long id, @RequestBody Prestamo prestamo) {
 		try {
+			if (prestamo.getCopia() == null || prestamo.getUsuario() == null) {
+				throw new IllegalArgumentException("Copia y Usuario no pueden ser null");
+			}
 			Prestamo updated = service.updatePrestamo(id, prestamo);
 			return ResponseEntity.ok(updated);
 		} catch (RuntimeException e) {

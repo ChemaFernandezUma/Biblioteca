@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Copias</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        div {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input {
+            margin-left: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        const baseUrl = "http://localhost:8080/copias";
+
+        async function getAllCopias() {
+            const response = await fetch(`${baseUrl}/getAll`);
+            const copias = await response.json();
+            const tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = ""; // Limpiar la tabla antes de agregar nuevos datos
+
+            copias.forEach(copia => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${copia.id}</td>
+                    <td>${copia.estado}</td>
+                    <td>${copia.libro ? copia.libro.titulo : "Sin libro asociado"}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        async function getCopiaById() {
+            const id = document.getElementById("copiaId").value;
+            const response = await fetch(`${baseUrl}/${id}`);
+            if (response.ok) {
+                const copia = await response.json();
+                const tableBody = document.getElementById("tableBody");
+                tableBody.innerHTML = ""; // Limpiar la tabla antes de agregar nuevos datos
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${copia.id}</td>
+                    <td>${copia.estado}</td>
+                    <td>${copia.libro ? copia.libro.titulo : "Sin libro asociado"}</td>
+                `;
+                tableBody.appendChild(row);
+            } else {
+                alert("Copia no encontrada.");
+            }
+        }
+
+        async function createCopia() {
+            const estado = document.getElementById("estado").value;
+            const libroId = document.getElementById("libroId").value;
+
+            const copia = {
+                estado: estado,
+                libro: { id: libroId }
+            };
+
+            const response = await fetch(`${baseUrl}/create`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(copia)
+            });
+
+            const result = await response.json();
+            document.getElementById("output").innerText = JSON.stringify(result, null, 2);
+        }
+
+        async function updateCopia() {
+            const id = document.getElementById("copiaId").value;
+            const estado = document.getElementById("estado").value;
+            const libroId = document.getElementById("libroId").value;
+
+            const copia = {
+                estado: estado,
+                libro: { id: libroId }
+            };
+
+            const response = await fetch(`${baseUrl}/update/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(copia)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                document.getElementById("output").innerText = JSON.stringify(result, null, 2);
+            } else {
+                document.getElementById("output").innerText = "Error al actualizar la copia.";
+            }
+        }
+
+        async function deleteCopia() {
+            const id = document.getElementById("copiaId").value;
+
+            const response = await fetch(`${baseUrl}/delete/${id}`, {
+                method: "DELETE"
+            });
+
+            if (response.ok) {
+                document.getElementById("output").innerText = "Copia eliminada correctamente.";
+            } else {
+                document.getElementById("output").innerText = "Error al eliminar la copia.";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Gestión de Copias</h1>
+
+    <div>
+        <button onclick="getAllCopias()">Obtener todas las copias</button>
+    </div>
+
+    <div>
+        <label for="copiaId">ID de la copia:</label>
+        <input type="number" id="copiaId" />
+        <button onclick="getCopiaById()">Buscar copia por ID</button>
+    </div>
+
+    <div>
+        <label for="estado">Estado:</label>
+        <input type="text" id="estado" />
+        <label for="libroId">ID del libro:</label>
+        <input type="number" id="libroId" />
+        <button onclick="createCopia()">Crear copia</button>
+        <button onclick="updateCopia()">Actualizar copia</button>
+    </div>
+
+    <div>
+        <button onclick="deleteCopia()">Eliminar copia</button>
+    </div>
+
+    <h2>Lista de Copias:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Estado</th>
+                <th>Libro Asociado</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Las filas se agregarán dinámicamente aquí -->
+        </tbody>
+    </table>
+</body>
+</html>

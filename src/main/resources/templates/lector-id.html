@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalles del Lector</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Detalles del Lector</h1>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${lector.nombre}"></h5>
+                <p><strong>ID-Lector:</strong> <span th:text="${lector.nSocio}"></span></p>
+                <p><strong>Teléfono:</strong> <span th:text="${lector.telefono}"></span></p>
+                <p><strong>Dirección:</strong> <span th:text="${lector.direccion}"></span></p>
+                <a href="/lectoresView" class="btn btn-secondary">Volver a la lista</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

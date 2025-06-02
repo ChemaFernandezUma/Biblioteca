@@ -11,7 +11,7 @@ import com.example.biblioteca.model.Autor;
 import com.example.biblioteca.service.AutorService;
 
 @RestController
-@RequestMapping("/authors")
+@RequestMapping("/autors")
 public class AutorController {
 
 	private final AutorService service;

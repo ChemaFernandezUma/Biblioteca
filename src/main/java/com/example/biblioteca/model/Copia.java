@@ -25,6 +25,15 @@ public class Copia {
 	@JsonBackReference(value = "copia-prestamo")
 	private Prestamo prestamo;
 
+	public Copia() {}
+
+    public Copia(Long id, EstadoCopia estado, Libro libro, Prestamo prestamo) {
+        this.id = id;
+        this.estado = estado;
+        this.libro = libro;
+        this.prestamo = prestamo;
+    }
+
 	public Long getId() {
 		return id;
 	}

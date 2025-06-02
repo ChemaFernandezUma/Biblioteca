@@ -28,6 +28,16 @@ public class Autor {
     @JsonManagedReference(value = "autor-libro")
     private List<Libro> librosEscritos;
 
+	public Autor() {}
+
+    public Autor(Long id, String nombre, String nacionalidad, Date fechaNacimiento, List<Libro> librosEscritos) {
+        this.id = id;
+        this.nombre = nombre;
+        this.nacionalidad = nacionalidad;
+        this.fechaNacimiento = fechaNacimiento;
+        this.librosEscritos = librosEscritos;
+    }
+
 	public Long getId() {
 		return id;
 	}

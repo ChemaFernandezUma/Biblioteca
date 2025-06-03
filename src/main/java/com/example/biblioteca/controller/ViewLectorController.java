@@ -2,8 +2,11 @@ package com.example.biblioteca.controller;
 
 import com.example.biblioteca.model.Copia;
 import com.example.biblioteca.model.Lector;
+import com.example.biblioteca.model.Libro;
 import com.example.biblioteca.service.CopiaService;
 import com.example.biblioteca.service.LectorService;
+import com.example.biblioteca.service.LibroService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +28,8 @@ public class ViewLectorController {
     
     @Autowired
     private CopiaService copiaService;
+    @Autowired
+    private LibroService libroService;
 
     // 📖 Mostrar lista de lectores
     @GetMapping
@@ -99,21 +104,22 @@ public class ViewLectorController {
         Optional<Lector> lector = lectorService.getLectorById(id);
         if (lector.isPresent()) {
             model.addAttribute("lector", lector.get());
-            model.addAttribute("copias", copiaService.getAllCopias());
+            model.addAttribute("libros", libroService.getAllBooks());
+            
             return "prestar-copia";
         }
         return "redirect:/lectoresView";
     }
     
     @PostMapping("/prestar")
-    public String prestarCopia(@RequestParam Long copiaId, @RequestParam Long lectorId, @RequestParam LocalDate fechaActual) {
+    public String prestarCopia(@RequestParam Long libroId, @RequestParam Long lectorId, @RequestParam LocalDate fechaActual) {
         Optional<Lector> lectorOpt = lectorService.getLectorById(lectorId);
-        Optional<Copia> copiaOpt = copiaService.getCopiaById(copiaId);
+        Optional<Libro> copiaOpt = libroService.getLibroById(libroId);
 
         if (lectorOpt.isPresent() && copiaOpt.isPresent()) {
             Lector lector = lectorOpt.get();
-            Copia copia = copiaOpt.get();
-            lector.prestarCopia(copia, fechaActual);
+            Libro libro = copiaOpt.get();
+            lectorService.prestar(lectorId, libro);
         }
         return "redirect:/lectoresView";
     }

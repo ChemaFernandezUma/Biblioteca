@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.biblioteca.model.Copia;
 import com.example.biblioteca.model.Prestamo;
 import com.example.biblioteca.repository.PrestamoRepository;
 
@@ -43,4 +44,8 @@ public class PrestamoService {
     public void deletePrestamo(Long id) {
         repository.deleteById(id);
     }
+    
+    // public List<Prestamo> getPrestamosOfUser(Long id) {
+    // 	return repository.findByLectorNSocio(id);
+    // }
 }

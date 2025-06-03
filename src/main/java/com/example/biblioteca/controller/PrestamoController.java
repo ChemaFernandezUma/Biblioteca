@@ -55,4 +55,14 @@ public class PrestamoController {
 		service.deletePrestamo(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	// @GetMapping("/copiasByUser/{id}")
+	// public ResponseEntity<Void> getCopiasUser(@PathVariable Long id) {
+	// 	List<Prestamo> prestamos = service.getPrestamosOfUser(id);
+	// 	for (Prestamo prestamo : prestamos) {
+	// 		System.out.println(prestamo.getId());
+	// 	}
+	// 	return null;
+	// }
+
 }

@@ -24,7 +24,10 @@ public class LectorService {
 
     private final LectorRepository repository;
     private final CopiaRepository copiaRepository;
-
+    
+    @Autowired
+    private PrestamoRepository prestamoRepository;
+    
     @Autowired
     public LectorService(LectorRepository repository, CopiaRepository copiaRepository) {
         this.repository = repository;
@@ -32,9 +35,6 @@ public class LectorService {
         this.prestamoRepository = prestamoRepository;
 
     }
-    
-    @Autowired
-    private PrestamoRepository prestamoRepository;
     
     public List<Lector> getAllLectores() {
         return repository.findAll();
@@ -108,6 +108,7 @@ public class LectorService {
                     lector.getPrestamos().add(prestamo);
                     repository.save(lector);
                     copiaRepository.save(copia);
+                    prestamoRepository.save(prestamo);
                     return true;
                 }
             }

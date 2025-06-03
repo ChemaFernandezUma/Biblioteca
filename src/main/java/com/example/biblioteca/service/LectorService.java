@@ -14,6 +14,7 @@ import com.example.biblioteca.model.Libro;
 import com.example.biblioteca.model.Prestamo;
 import com.example.biblioteca.repository.CopiaRepository;
 import com.example.biblioteca.repository.LectorRepository;
+import com.example.biblioteca.repository.PrestamoRepository;
 import com.example.biblioteca.model.Copia;
 import com.example.biblioteca.model.EstadoCopia;
 import com.example.biblioteca.model.Multa;
@@ -28,8 +29,13 @@ public class LectorService {
     public LectorService(LectorRepository repository, CopiaRepository copiaRepository) {
         this.repository = repository;
         this.copiaRepository = copiaRepository;
-    }
+        this.prestamoRepository = prestamoRepository;
 
+    }
+    
+    @Autowired
+    private PrestamoRepository prestamoRepository;
+    
     public List<Lector> getAllLectores() {
         return repository.findAll();
     }

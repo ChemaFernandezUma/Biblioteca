@@ -28,6 +28,8 @@
                         <a th:href="@{/lectoresView/{id}(id=${lector.nSocio})}" class="btn btn-info">Ver</a>
                         <a th:href="@{/lectoresView/update/{id}(id=${lector.nSocio})}" class="btn btn-warning">Editar</a>
                         <a th:href="@{/lectoresView/delete/{id}(id=${lector.nSocio})}" class="btn btn-danger">Eliminar</a>
+                        <a th:href="@{/lectoresView/prestar/{id}(id=${lector.nSocio})}" class="btn btn-success">Prestar</a>
+                        <a th:href="@{/lectoresView/devolver/{id}(id=${lector.nSocio})}" class="btn btn-secondary">Devolver</a>
                     </td>
                 </tr>
             </tbody>

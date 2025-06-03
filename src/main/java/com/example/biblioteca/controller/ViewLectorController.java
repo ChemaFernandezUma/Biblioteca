@@ -1,12 +1,15 @@
 package com.example.biblioteca.controller;
 
+import com.example.biblioteca.model.Copia;
 import com.example.biblioteca.model.Lector;
+import com.example.biblioteca.service.CopiaService;
 import com.example.biblioteca.service.LectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Controller
@@ -19,6 +22,9 @@ public class ViewLectorController {
     public ViewLectorController(LectorService lectorService) {
         this.lectorService = lectorService;
     }
+    
+    @Autowired
+    private CopiaService copiaService;
 
     // 📖 Mostrar lista de lectores
     @GetMapping
@@ -87,4 +93,56 @@ public class ViewLectorController {
         lectorService.deleteLector(lector.getnSocio());
         return "redirect:/lectoresView";
     }
+    
+    @GetMapping("/prestar/{id}")
+    public String mostrarFormularioPrestar(@PathVariable Long id, Model model) {
+        Optional<Lector> lector = lectorService.getLectorById(id);
+        if (lector.isPresent()) {
+            model.addAttribute("lector", lector.get());
+            model.addAttribute("copias", copiaService.getAllCopias());
+            return "prestar-copia";
+        }
+        return "redirect:/lectoresView";
+    }
+    
+    @PostMapping("/prestar")
+    public String prestarCopia(@RequestParam Long copiaId, @RequestParam Long lectorId, @RequestParam LocalDate fechaActual) {
+        Optional<Lector> lectorOpt = lectorService.getLectorById(lectorId);
+        Optional<Copia> copiaOpt = copiaService.getCopiaById(copiaId);
+
+        if (lectorOpt.isPresent() && copiaOpt.isPresent()) {
+            Lector lector = lectorOpt.get();
+            Copia copia = copiaOpt.get();
+            lector.prestarCopia(copia, fechaActual);
+        }
+        return "redirect:/lectoresView";
+    }
+    
+    @GetMapping("/devolver/{id}")
+    public String mostrarFormularioDevolver(@PathVariable Long id, Model model) {
+        Optional<Lector> lector = lectorService.getLectorById(id);
+        if (lector.isPresent()) {
+            model.addAttribute("lector", lector.get());
+            model.addAttribute("copias", copiaService.getAllCopias());
+            return "devolver-copia";
+        }
+        return "redirect:/lectoresView";
+    }
+ 
+    
+    @PostMapping("/devolver")
+    public String devolverCopia(@RequestParam Long copiaId, @RequestParam Long lectorId, @RequestParam LocalDate fechaDevolucion) {
+        Optional<Lector> lectorOpt = lectorService.getLectorById(lectorId);
+        Optional<Copia> copiaOpt = copiaService.getCopiaById(copiaId);
+
+        if (lectorOpt.isPresent() && copiaOpt.isPresent()) {
+            Lector lector = lectorOpt.get();
+            Copia copia = copiaOpt.get();
+            lector.devolverCopia(copia, fechaDevolucion);
+        }
+        return "redirect:/lectoresView";
+    }
+
+
+
 }

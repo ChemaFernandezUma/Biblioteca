@@ -1,153 +1,167 @@
 
-#  Proyecto Spring Boot - Biblioteca
+# Proyecto Spring Boot - Biblioteca (TP8)
 
-Este proyecto ha sido desarrollado utilizando **Spring Boot 3.5.0**. Es una aplicación web para gestionar una biblioteca, incluyendo operaciones CRUD sobre profesores, materias y estudiantes, con relaciones entre ellos. Utiliza una arquitectura en capas basada en Spring (Controller - Service - Repository) y una base de datos MySQL para la persistencia.
+Este proyecto es una aplicación web de gestión de una **biblioteca**, desarrollada en **Spring Boot 3.5.0**, con persistencia en **MySQL**. Permite gestionar libros, autores, lectores, copias de libros y préstamos. Se han implementado las reglas de negocio para préstamos, devoluciones, estados de copias y multas por retrasos.
 
 ---
 
-##  Tecnologías y dependencias utilizadas
+## Tecnologías y dependencias utilizadas
 
 - **Spring Boot 3.5.0**
-- **Spring Web**: Para la creación de controladores REST y manejo de peticiones HTTP.
-- **Spring Data JPA**: Para la persistencia de datos y acceso a la base de datos.
-- **MySQL Driver**: Para la conexión con la base de datos MySQL.
-- **Lombok**: Para reducir el código boilerplate (getters, setters, constructores, etc.).
-- **Thymeleaf**: Motor de plantillas para la generación de vistas HTML.
+- **Spring Web** – Controladores REST y manejo de peticiones HTTP.
+- **Spring Data JPA** – Persistencia y operaciones CRUD.
+- **MySQL Driver** – Conexión con base de datos MySQL.
+- **Lombok** – Anotaciones para reducir código repetitivo.
+- **Thymeleaf** *(opcional)* – Motor de plantillas para vistas HTML.
 
 ---
 
-##  Requisitos previos
+## Requisitos previos
 
 - **Java 17 o superior**
-- **Maven
+- **Maven**
 - **MySQL Server**
 
 ---
 
-##  Configuración
+## Configuración
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/ChemaFernandezUma/Biblioteca.git
+   git clone https://github.com/TuUsuarioGit/BibliotecaTP8.git
    ```
 
-2. Crea una base de datos en MySQL con el nombre correspondiente (definido en `application.properties`).
+2. Crea una base de datos en MySQL con el nombre definido en `application.properties`.
 
 3. Configura el archivo `src/main/resources/application.properties` con tus credenciales de MySQL:
    ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/tu_base_datos
+   spring.datasource.url=jdbc:mysql://localhost:3306/biblioteca_tp8
    spring.datasource.username=tu_usuario
    spring.datasource.password=tu_contraseña
    spring.jpa.hibernate.ddl-auto=update
    spring.jpa.show-sql=true
    ```
 
-4. Ejecuta la aplicación desde tu IDE o con el comando:
+4. Ejecuta la aplicación:
    ```bash
    mvn spring-boot:run
    ```
 
 ---
 
-##  Modelo de datos y relaciones
+## Modelo de datos
 
-###  Entidades principales
+### Entidades principales
 
-#### 1. `Teacher`
-- `id` (Long): Identificador único.
-- `nombre` (String): Nombre del docente.
-- **Relación**: Un `Teacher` puede tener **muchas** materias (`List<Subject>`).  
-  - Anotación JPA: `@OneToMany(mappedBy = "teacher")`
+#### `Autor`
+- `id`: Identificador único
+- `nombre`
+- `nacionalidad`
+- `fechaNacimiento`
 
-#### 2. `Subject`
-- `id` (Long): Identificador único.
-- `nombre` (String): Nombre de la materia.
-- **Relaciones**:
-  - Una `Subject` está asociada a **un solo** `Teacher`.  
-    - Anotación: `@ManyToOne`
-  - Una `Subject` puede tener **muchos** `Student` y viceversa.  
-    - Anotación: `@ManyToMany`
+#### `Libro`
+- `id`
+- `nombre`
+- `tipo` (novela, teatro, poesía, ensayo)
+- `editorial`
+- `año`
+- `autor` (relación con `Autor`)
+- **Relación**: Un libro puede tener muchas copias (`@OneToMany`)
 
-#### 3. `Student`
-- `id` (Long): Identificador único.
-- `nombre` (String): Nombre del estudiante.
-- `apellido` (String): Apellido del estudiante.
-- `identificacion` (String): Documento de identidad.
-- **Relación**: Puede cursar muchas materias (`List<Subject>`) mediante una relación `@ManyToMany`.
+#### `Copia`
+- `id`
+- `isbn`
+- `estado` (`EN_BIBLIOTECA`, `PRESTADA`, `RETRASADA`, `EN_REPARACION`, `BAJA`)
+- `cantidadTotal`
+- `cantidadDisponible`
+- **Relación**: Pertenece a un `Libro`
 
-###  Diagrama de relaciones simplificado:
+#### `Lector`
+- `id`
+- `nombre`
+- `apellido`
+- `identificacion`
+- Puede tener **máximo 3 préstamos activos**
+- Tiene métodos para aplicar **multas**
 
-```text
-Teacher ────< Subject >──── Student
-   1         N      M        N
+#### `Prestamo`
+- `id`
+- `lector` (relación con `Lector`)
+- `copia` (relación con `Copia`)
+- `fechaRetiro` (máximo 30 días)
+- `fechaDevolucion`
+- **Reglas**:
+  - Por cada día de retraso, se aplican 2 días sin poder pedir un nuevo libro.
+  - Si hay multa activa, el lector no puede pedir libros.
+
+---
+
+## Lógica de negocio
+
+- Validación de préstamos:
+  - Verifica que el lector no tenga más de 3 préstamos activos.
+  - Verifica que la copia esté disponible y en buen estado.
+  - Aplica fecha actual con `LocalDate.now()` al hacer un préstamo.
+- Devoluciones:
+  - Se verifica el estado físico del libro.
+  - Se actualiza el estado de la copia: `DISPONIBLE`, `EN_REPARACION`, o `BAJA`.
+- Se calculan multas si la devolución supera los 30 días.
+- Se actualizan los contadores de copias disponibles y prestadas.
+
+---
+
+## Simulación solicitada
+
+- Cargar 10 libros con varias copias.
+- Prestar 3 libros al lector A.
+- Prestar 2 libros al lector B.
+- Mostrar por consola el **stock de libros** disponibles.
+
+---
+
+## Arquitectura del proyecto
+
+```
+com.biblioteca.tp8
+├── controller        → Endpoints REST
+├── service           → Reglas de negocio
+├── repository        → Interfaces JpaRepository
+├── model             → Entidades JPA
+├── dto               → Objetos de transferencia de datos (opcional)
+└── BibliotecaTp8Application.java → Clase main
 ```
 
 ---
 
-##  Arquitectura del proyecto
+## Endpoints REST
 
-```
-com.indra.tp7
-├── controller    → Controladores REST (exponen endpoints HTTP)
-├── service       → Lógica de negocio
-├── repository    → Interfaces que extienden JpaRepository
-├── model         → Clases de entidad JPA
-└── BibliotecaApplication.java → Clase principal con método main()
+- `GET /api/libros`
+- `GET /api/copias`
+- `GET /api/autores`
+- `GET /api/lectores`
+- `GET /api/prestamos`
+- `POST /api/prestamos` → Validado contra reglas de negocio
+- `PUT /api/devoluciones/{id}` → Procesa devolución y estado de la copia
+
+---
+
+## Ejemplo de JSON para POST de préstamo
+
+```json
+{
+  "lectorId": 1,
+  "copiaId": 5
+}
 ```
 
 ---
 
-##  Endpoints disponibles
+## Consideraciones extra
 
-Cada entidad (`Teacher`, `Subject`, `Student`) dispone de los siguientes endpoints REST:
-
-- `GET /api/{entidad}`: Obtener todos los registros
-- `GET /api/{entidad}/{id}`: Obtener un registro por ID
-- `POST /api/{entidad}`: Crear un nuevo registro
-- `PUT /api/{entidad}/{id}`: Actualizar un registro por ID
-- `DELETE /api/{entidad}/{id}`: Eliminar un registro por ID
-
-> Ejemplo para la entidad Teacher:
-> 
-> - `GET /api/teachers`
-> - `POST /api/teachers`
-> - `PUT /api/teachers/{id}`
-> - `DELETE /api/teachers/{id}`
-
-Estos endpoints se pueden probar con herramientas como **Postman** o **cURL**.
-
----
-
-##  Ejemplo de JSON para POST (Teacher)
-
-```json
-{
-  "nombre": "Carlos Pérez"
-}
-```
-
-##  Ejemplo de JSON para POST (Subject)
-
-```json
-{
-  "nombre": "Matemáticas",
-  "teacher": {
-    "id": 1
-  }
-}
-```
-
-##  Ejemplo de JSON para POST (Student)
-
-```json
-{
-  "nombre": "Lucía",
-  "apellido": "Gómez",
-  "identificacion": "12345678X",
-  "subjects": [
-    { "id": 1 },
-    { "id": 2 }
-  ]
-}
-```
-
+- En la clase `Lector`, el método `multar()` debe ser **público**.
+- La entidad `Libro` puede tener los atributos `nombreAutor`, `fechaNacAutor`, `nacionalidadAutor` si no se modela una clase `Autor` separada.
+- Validaciones implementadas para préstamo:
+  - Estado de la copia
+  - Disponibilidad
+  - Multas del lector
+  - Cantidad máxima de préstamos

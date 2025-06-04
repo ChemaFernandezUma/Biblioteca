@@ -1,6 +1,7 @@
 package com.example.biblioteca.service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.sql.Date;
 import java.util.List;
@@ -87,7 +88,11 @@ public class LectorService {
 				repository.save(lector);
 				copiaRepository.save(copia);
 				prestamoRepository.save(prestamo);
-		        long diferenciaDias = ChronoUnit.DAYS.between(prestamo.getFin(), prestamo.getInicio());
+				// Convert to LocalDate
+				LocalDate inicio = prestamo.getInicio().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				LocalDate fin = prestamo.getFin().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+		        int diferenciaDias = (int) ChronoUnit.DAYS.between(inicio, fin);
 		        multar(id, diferenciaDias);
 				return true;
 			}

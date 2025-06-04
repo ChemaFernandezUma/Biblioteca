@@ -182,7 +182,7 @@ com.biblioteca.tp8
 
 ---
 
-## Ejmeplos de JSON
+## Ejemplos de JSON
 
 ### POST de autores
 

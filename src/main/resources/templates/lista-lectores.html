@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Lectores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Lista de Lectores</h1>
+
+        <table class="table table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Numero de Socio</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="lector : ${lectores}">
+                    <td th:text="${lector.nSocio}"></td>
+                    <td th:text="${lector.nombre}"></td>
+                    <td th:text="${lector.telefono}"></td>
+                    <td th:text="${lector.direccion}"></td>
+                    <td>
+                        <a th:href="@{/lectoresView/{id}(id=${lector.nSocio})}" class="btn btn-info">Ver</a>
+                        <a th:href="@{/lectoresView/update/{id}(id=${lector.nSocio})}" class="btn btn-warning">Editar</a>
+                        <a th:href="@{/lectoresView/delete/{id}(id=${lector.nSocio})}" class="btn btn-danger">Eliminar</a>
+                        <a th:href="@{/lectoresView/prestar/{id}(id=${lector.nSocio})}" class="btn btn-success">Prestar</a>
+                        <a th:href="@{/lectoresView/devolver/{id}(id=${lector.nSocio})}" class="btn btn-secondary">Devolver</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center mt-3">
+            <a href="/lectoresView/nuevo" class="btn btn-primary">Agregar Nuevo Lector</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

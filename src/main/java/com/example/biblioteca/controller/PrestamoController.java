@@ -31,12 +31,18 @@ public class PrestamoController {
 
 	@PostMapping("/create")
 	public Prestamo createPrestamo(@RequestBody Prestamo prestamo) {
+		if (prestamo.getCopia() == null || prestamo.getUsuario() == null) {
+			throw new IllegalArgumentException("Copia y Usuario no pueden ser null");
+		}
 		return service.createPrestamo(prestamo);
 	}
 
 	@PutMapping("/update/{id}")
 	public ResponseEntity<Prestamo> updatePrestamo(@PathVariable Long id, @RequestBody Prestamo prestamo) {
 		try {
+			if (prestamo.getCopia() == null || prestamo.getUsuario() == null) {
+				throw new IllegalArgumentException("Copia y Usuario no pueden ser null");
+			}
 			Prestamo updated = service.updatePrestamo(id, prestamo);
 			return ResponseEntity.ok(updated);
 		} catch (RuntimeException e) {
@@ -49,4 +55,14 @@ public class PrestamoController {
 		service.deletePrestamo(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	// @GetMapping("/copiasByUser/{id}")
+	// public ResponseEntity<Void> getCopiasUser(@PathVariable Long id) {
+	// 	List<Prestamo> prestamos = service.getPrestamosOfUser(id);
+	// 	for (Prestamo prestamo : prestamos) {
+	// 		System.out.println(prestamo.getId());
+	// 	}
+	// 	return null;
+	// }
+
 }

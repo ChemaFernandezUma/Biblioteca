@@ -11,7 +11,7 @@ import com.example.biblioteca.model.Copia;
 import com.example.biblioteca.service.CopiaService;
 
 @RestController
-@RequestMapping("/copies")
+@RequestMapping("/copias")
 public class CopiaController {
 
     private final CopiaService service;

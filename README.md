@@ -12,7 +12,7 @@ Este proyecto es una aplicación web de gestión de una **biblioteca**, desarrol
 - **Spring Data JPA** – Persistencia y operaciones CRUD.
 - **MySQL Driver** – Conexión con base de datos MySQL.
 - **Lombok** – Anotaciones para reducir código repetitivo.
-- **Thymeleaf** *(opcional)* – Motor de plantillas para vistas HTML.
+- **Thymeleaf**  – Motor de plantillas para vistas HTML.
 
 ---
 
@@ -40,6 +40,11 @@ Este proyecto es una aplicación web de gestión de una **biblioteca**, desarrol
    spring.datasource.password=tu_contraseña
    spring.jpa.hibernate.ddl-auto=update
    spring.jpa.show-sql=true
+   spring.thymeleaf.prefix=classpath:/templates/
+   spring.thymeleaf.suffix=.html
+   spring.mvc.view.prefix=/templates/
+   spring.mvc.view.suffix=.html
+
    ```
 
 4. Ejecuta la aplicación:
@@ -127,7 +132,6 @@ com.biblioteca.tp8
 ├── service           → Reglas de negocio
 ├── repository        → Interfaces JpaRepository
 ├── model             → Entidades JPA
-├── dto               → Objetos de transferencia de datos (opcional)
 └── BibliotecaTp8Application.java → Clase main
 ```
 
@@ -135,17 +139,109 @@ com.biblioteca.tp8
 
 ## Endpoints REST
 
-- `GET /api/libros`
-- `GET /api/copias`
-- `GET /api/autores`
-- `GET /api/lectores`
-- `GET /api/prestamos`
-- `POST /api/prestamos` → Validado contra reglas de negocio
-- `PUT /api/devoluciones/{id}` → Procesa devolución y estado de la copia
+| Método | Endpoint              | Descripción               |
+| ------ | --------------------- | ------------------------- |
+| GET    | `/autors/getAll`      | Obtener todos los autores |
+| GET    | `/autors/{id}`        | Obtener autor por ID      |
+| POST   | `/autors/create`      | Crear un nuevo autor      |
+| PUT    | `/autors/update/{id}` | Actualizar autor por ID   |
+| DELETE | `/autors/delete/{id}` | Eliminar autor por ID     |
+
+| Método | Endpoint              | Descripción              |
+| ------ | --------------------- | ------------------------ |
+| GET    | `/copias/getAll`      | Obtener todas las copias |
+| GET    | `/copias/{id}`        | Obtener copia por ID     |
+| POST   | `/copias/create`      | Crear una nueva copia    |
+| PUT    | `/copias/update/{id}` | Actualizar copia por ID  |
+| DELETE | `/copias/delete/{id}` | Eliminar copia por ID    |
+
+| Método | Endpoint                | Descripción                |
+| ------ | ----------------------- | -------------------------- |
+| GET    | `/lectores/getAll`      | Obtener todos los lectores |
+| GET    | `/lectores/{id}`        | Obtener lector por ID      |
+| POST   | `/lectores/create`      | Crear un nuevo lector      |
+| PUT    | `/lectores/update/{id}` | Actualizar lector por ID   |
+| DELETE | `/lectores/delete/{id}` | Eliminar lector por ID     |
+
+| Método | Endpoint              | Descripción              |
+| ------ | --------------------- | ------------------------ |
+| GET    | `/libros/getAll`      | Obtener todos los libros |
+| GET    | `/libros/{id}`        | Obtener libro por ID     |
+| POST   | `/libros/create`      | Crear un nuevo libro     |
+| PUT    | `/libros/update/{id}` | Actualizar libro por ID  |
+| DELETE | `/libros/delete/{id}` | Eliminar libro por ID    |
+
+| Método | Endpoint       | Descripción              |
+| ------ | -------------- | ------------------------ |
+| GET    | `/multas`      | Obtener todas las multas |
+| GET    | `/multas/{id}` | Obtener multa por ID     |
+| POST   | `/multas`      | Crear una nueva multa    |
+| PUT    | `/multas/{id}` | Actualizar multa por ID  |
+| DELETE | `/multas/{id}` | Eliminar multa por ID    |
+
 
 ---
 
-## Ejemplo de JSON para POST de préstamo
+## Ejmeplos de JSON
+
+### POST de autores
+
+```json
+{
+  "nombre": "Gabriel García Márquez",
+  "nacionalidad": "Colombiana",
+  "fechaNacimiento": "1927-03-06"
+}
+```
+
+### POST de autores
+
+```json
+{
+  "nombre": "Gabriel García Márquez",
+  "nacionalidad": "Colombiana",
+  "fechaNacimiento": "1927-03-06"
+}
+```
+
+### POST de libros
+
+```json
+{
+  "nombre": "Cien años de soledad",
+  "tipo": "novela",
+  "editorial": "Sudamericana",
+  "anio": 1967,
+  "autor": {
+    "id": 1
+  }
+}
+```
+
+### POST de copias
+```json
+{
+  "isbn": "978-84-376-0494-7",
+  "estado": "EN_BIBLIOTECA",
+  "cantidadTotal": 5,
+  "cantidadDisponible": 5,
+  "libro": {
+    "id": 1
+  }
+}
+```
+
+### POST de lectores
+```json
+{
+  "nombre": "Lucía",
+  "apellido": "Gómez",
+  "identificacion": "12345678X"
+}
+
+```
+
+### POST de préstamo
 
 ```json
 {
@@ -154,14 +250,3 @@ com.biblioteca.tp8
 }
 ```
 
----
-
-## Consideraciones extra
-
-- En la clase `Lector`, el método `multar()` debe ser **público**.
-- La entidad `Libro` puede tener los atributos `nombreAutor`, `fechaNacAutor`, `nacionalidadAutor` si no se modela una clase `Autor` separada.
-- Validaciones implementadas para préstamo:
-  - Estado de la copia
-  - Disponibilidad
-  - Multas del lector
-  - Cantidad máxima de préstamos

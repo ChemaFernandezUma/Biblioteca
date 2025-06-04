@@ -20,8 +20,8 @@
         <tr th:each="prestamo : ${prestamos}">
             <td th:text="${prestamo.id}">ID</td>
             <td th:text="${prestamo.usuario.nombre}">Usuario</td>
-            <td th:text="${prestamo.copia.id}">Copia</td>
-            <td th:text="${prestamo.fechaPrestamo}">Fecha</td>
+			<td th:text="${prestamo.copia != null ? prestamo.copia.id : ''}">Copia</td>
+            <td th:text="${prestamo.inicio}">Fecha</td>
         </tr>
         </tbody>
     </table>

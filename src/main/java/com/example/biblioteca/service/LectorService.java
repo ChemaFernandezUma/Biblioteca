@@ -1,6 +1,7 @@
 package com.example.biblioteca.service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.sql.Date;
 import java.util.List;
@@ -70,25 +71,38 @@ public class LectorService {
 		if (copia == null) {
 			throw new IllegalArgumentException("La copia no puede ser null");
 		}
-		System.out.print("Lector" + id);
+
 		Optional<Lector> lectorOpt = repository.findById(id);
 		if (lectorOpt.isPresent()) {
 			Lector lector = lectorOpt.get();
+
 			Optional<Prestamo> prestamoOpt = lector.getPrestamos().stream()
-					.filter(prestamo -> prestamo.getCopia().getId().equals(copia.getId())) // Actualització aquí
-					.findFirst();
-			System.out.println("Entra primero");
+					.filter(prestamo -> prestamo.getCopia().getId().equals(copia.getId())).findFirst();
+
 			if (prestamoOpt.isPresent()) {
-				System.out.println("Entra");
 				Prestamo prestamo = prestamoOpt.get();
-				lector.getPrestamos().remove(prestamo);
+
+				// Actualizar entidades antes de romper relaciones
 				prestamo.setFin(Date.valueOf(LocalDate.now()));
 				copia.setEstado(EstadoCopia.BIBLIOTECA);
-				repository.save(lector);
-				copiaRepository.save(copia);
+				// Calcular días entre fechas
+				LocalDate inicio = ((java.sql.Date) prestamo.getInicio()).toLocalDate();
+				LocalDate fin = ((java.sql.Date) prestamo.getFin()).toLocalDate();
+				int diferenciaDias = (int) ChronoUnit.DAYS.between(inicio, fin);
+				if(diferenciaDias>30) {
+					multar(id, diferenciaDias-30);
+				}
+				// Guardar antes de romper relaciones
 				prestamoRepository.save(prestamo);
-		        long diferenciaDias = ChronoUnit.DAYS.between(prestamo.getFin(), prestamo.getInicio());
-		        multar(id, diferenciaDias);
+				copiaRepository.save(copia);
+
+				// Ahora eliminar la relación
+				prestamo.setCopia(null);
+				lector.getPrestamos().remove(prestamo);
+
+				// Finalmente guardar el lector
+				repository.save(lector);
+
 				return true;
 			}
 		}
